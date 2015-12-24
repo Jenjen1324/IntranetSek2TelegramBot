@@ -7,8 +7,19 @@ import no.northcode.jens.intranetsek2tg.commands.CommandSchoolList;
 import no.northcode.jens.intranetsek2tg.commands.CommandTimetable;
 import no.northcode.jens.plustgbot.PlusBot;
 
+/**
+ * The Main class
+ *
+ * @author Jens V.
+ */
 public class Main {
 	
+	/**
+	 * The main method.
+	 * Entry point
+	 * @param args the arguments
+	 * @throws Exception the exception
+	 */
 	public static void main(String[] args) throws Exception {
 		Config config = new Config("config.txt");
 		MysqlHelper mysql = new MysqlHelper(config);

@@ -6,7 +6,9 @@ import java.util.ArrayList;
 
 import de.raysha.lib.telegram.bot.api.exception.BotException;
 import de.raysha.lib.telegram.bot.api.model.Message;
-import no.northcode.jens.intranetsek2.LoginException;
+import no.northcode.jens.intranetsek2.exception.IntranetException;
+import no.northcode.jens.intranetsek2.exception.InvalidCredentialsException;
+import no.northcode.jens.intranetsek2.exception.LoginException;
 import no.northcode.jens.intranetsek2tg.MysqlHelper;
 import no.northcode.jens.plustgbot.ICommandHandler;
 import no.northcode.jens.plustgbot.PlusBot;
@@ -31,7 +33,7 @@ public class CommandLogin implements ICommandHandler {
 	}
 
 	@Override
-	public void handleMessage(PlusBot bot, Message message) throws BotException, IOException, SQLException {
+	public void handleMessage(PlusBot bot, Message message) throws BotException, IOException, SQLException, IntranetException {
 		String[] split = message.getText().split(" ");
 		if(split.length < 4) {
 			bot.normalReply(message, invalidMessage);
@@ -40,9 +42,11 @@ public class CommandLogin implements ICommandHandler {
 		
 		try {
 			mysql.addLogin(message.getFrom().getId(), split[3], split[1], split[2]);
-		} catch (LoginException e) {
+		} catch (InvalidCredentialsException e) {
 			bot.normalReply(message, invalidCredMessage);
 			return;
+		} catch (LoginException e) {
+			bot.normalReply(message, invalidMessage);
 		}
 		
 	}

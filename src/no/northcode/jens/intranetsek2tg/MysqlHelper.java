@@ -7,22 +7,33 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+
 import no.northcode.jens.intranetsek2.Login;
-import no.northcode.jens.intranetsek2.LoginException;
+import no.northcode.jens.intranetsek2.exception.IntranetException;
+import no.northcode.jens.intranetsek2.exception.InvalidCredentialsException;
+import no.northcode.jens.intranetsek2.exception.LoginException;
 import no.northcode.jens.intranetsek2tg.model.SekUser;
 
 
+/**
+ * The Class MysqlHelper.
+ *
+ * @author Jens V.
+ */
 public class MysqlHelper {
 
+	/** The conn. */
 	private Connection conn;
 	
+	/** The logins. */
 	private ArrayList<SekUser> logins;
 	
-	public ArrayList<SekUser> getLogins() {
-		return logins;
-	}
-	
-	
+	/**
+	 * Instantiates a new mysql helper.
+	 *
+	 * @param c the Config
+	 * @throws SQLException when connecting to the database fails
+	 */
 	public MysqlHelper(Config c) throws SQLException  {
 		
 		//Driver driver = new com.mysql.jdbc.Driver(); 
@@ -33,7 +44,21 @@ public class MysqlHelper {
 		this.loadLogins();
 	}
 	
-	public void addLogin(int tg_userid, String school, String username, String password) throws IOException, SQLException, LoginException {
+	
+	/**
+	 * Adds the login.
+	 *
+	 * @param tg_userid the Telegram User ID
+	 * @param school the school
+	 * @param username the username
+	 * @param password the password
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws SQLException When inserting to the database fails
+	 * @throws InvalidCredentialsException when the credentials are invalid
+	 * @throws IntranetException when interaction with the intranet fails
+	 * @throws LoginException when something goes wrong while logging in
+	 */
+	public void addLogin(int tg_userid, String school, String username, String password) throws IOException, SQLException, InvalidCredentialsException, IntranetException, LoginException {
 		// Check if login is valid
 		new Login(username, password, school);
 		String sql = 
@@ -55,6 +80,20 @@ public class MysqlHelper {
 		this.logins.add(new SekUser(id, tg_userid, username, password, school));
 	}
 	
+	/**
+	 * Gets the logins.
+	 *
+	 * @return the logins
+	 */
+	public ArrayList<SekUser> getLogins() {
+		return logins;
+	}
+	
+	/**
+	 * Load logins.
+	 *
+	 * @throws SQLException the SQL exception
+	 */
 	private void loadLogins() throws SQLException {
 		String sql = "SELECT * FROM users";
 		

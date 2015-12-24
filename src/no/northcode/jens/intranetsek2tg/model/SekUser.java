@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import de.raysha.lib.telegram.bot.api.model.Message;
 import no.northcode.jens.intranetsek2.Login;
-import no.northcode.jens.intranetsek2.LoginException;
+import no.northcode.jens.intranetsek2.exception.IntranetException;
+import no.northcode.jens.intranetsek2.exception.InvalidCredentialsException;
+import no.northcode.jens.intranetsek2.exception.LoginException;
 import no.northcode.jens.intranetsek2tg.MysqlHelper;
 
 @SuppressWarnings("unused")
@@ -59,7 +61,7 @@ public class SekUser {
 		throw new Exception("User not found!");
 	}
 	
-	public Login getIntranetLogin() throws IOException, LoginException {
+	public Login getIntranetLogin() throws IOException, InvalidCredentialsException, LoginException, IntranetException {
 		return new Login(username, password, school);
 	}
 
