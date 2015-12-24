@@ -30,6 +30,7 @@ public class Main {
 		plusBot.registerCommand(new CommandSchoolList());
 		plusBot.registerCommand(new CommandLogin(mysql));
 		plusBot.registerCommand(new CommandTimetable(mysql));
+		plusBot.registerJoinGroupHandler(new CommandHelp());
 		plusBot.listen();
 		
 	}	

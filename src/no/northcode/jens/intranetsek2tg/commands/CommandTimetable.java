@@ -1,10 +1,11 @@
 package no.northcode.jens.intranetsek2tg.commands;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+import de.raysha.lib.telegram.bot.api.BotAPI.ChatAction;
 import de.raysha.lib.telegram.bot.api.exception.BotException;
+import de.raysha.lib.telegram.bot.api.model.ChatId;
 import de.raysha.lib.telegram.bot.api.model.Message;
 import no.northcode.jens.intranetsek2.Lesson;
 import no.northcode.jens.intranetsek2.Login;
@@ -34,6 +35,8 @@ public class CommandTimetable implements ICommandHandler {
 
 	@Override
 	public void handleMessage(PlusBot bot, Message message) throws BotException {
+		ChatId chat = new ChatId(message.getChat().getId());
+		bot.getBot().sendChatAction(chat, ChatAction.typing);
 		String[] split = message.getText().split(" ");
 		LocalDate ld;
 		if(split.length == 1) {
@@ -45,7 +48,7 @@ public class CommandTimetable implements ICommandHandler {
 		} else {
 			try {
 				ld = LocalDate.parse(split[1]);
-			} catch (DateTimeParseException ex) {
+			} catch (Exception ex) {
 				bot.normalReply(message, invalidDate);
 				return;
 			}

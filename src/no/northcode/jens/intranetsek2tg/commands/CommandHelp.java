@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 import de.raysha.lib.telegram.bot.api.exception.BotException;
 import de.raysha.lib.telegram.bot.api.model.Message;
+import de.raysha.lib.telegram.bot.api.model.Update;
 import no.northcode.jens.plustgbot.ICommandHandler;
+import no.northcode.jens.plustgbot.IGroupHandler;
 import no.northcode.jens.plustgbot.PlusBot;
 
-public class CommandHelp implements ICommandHandler {
+public class CommandHelp implements ICommandHandler, IGroupHandler {
 	
 	private String getHelpText() {
 		return (new StringBuilder())
@@ -40,6 +42,18 @@ public class CommandHelp implements ICommandHandler {
 
 	@Override
 	public void handleReply(PlusBot bot, Message message) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void handleJoinGroup(PlusBot bot, Update update) throws BotException {
+		this.handleMessage(bot, update.getMessage());
+		
+	}
+
+	@Override
+	public void handleLeaveGroup(PlusBot bot, Update update) throws BotException, Exception {
 		// TODO Auto-generated method stub
 		
 	}
