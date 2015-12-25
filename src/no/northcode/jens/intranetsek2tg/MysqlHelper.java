@@ -12,6 +12,7 @@ import no.northcode.jens.intranetsek2.Login;
 import no.northcode.jens.intranetsek2.exception.IntranetException;
 import no.northcode.jens.intranetsek2.exception.InvalidCredentialsException;
 import no.northcode.jens.intranetsek2.exception.LoginException;
+import no.northcode.jens.intranetsek2tg.model.ChatConfig;
 import no.northcode.jens.intranetsek2tg.model.SekUser;
 
 
@@ -27,7 +28,13 @@ public class MysqlHelper {
 	
 	/** The logins. */
 	private ArrayList<SekUser> logins;
+	private ArrayList<ChatConfig> chats;
 	
+	public ArrayList<ChatConfig> getChats() {
+		return chats;
+	}
+
+
 	/**
 	 * Instantiates a new mysql helper.
 	 *
@@ -80,6 +87,18 @@ public class MysqlHelper {
 		this.logins.add(new SekUser(id, tg_userid, username, password, school));
 	}
 	
+	public void addChat(SekUser login, int chatId) throws SQLException {
+		String sql = String.format("INSERT INTO chats (chatId, users_fk) VALUES ('%d','%d')", chatId, login.getId_users());
+		Statement stmt = this.conn.createStatement();
+		stmt.executeUpdate(sql, Statement.RETURN_GENERATED_KEYS);
+		ResultSet keys = stmt.getGeneratedKeys();
+		keys.next();
+		int id = (int) keys.getLong(1);
+		stmt.close();
+		
+		this.chats.add(new ChatConfig(id, chatId, login));
+	}
+	
 	/**
 	 * Gets the logins.
 	 *
@@ -113,5 +132,36 @@ public class MysqlHelper {
 		}
 		
 		stmt.close();
+		
+		sql = "SELECT * FROM chats";
+		
+		stmt = this.conn.createStatement();
+		resultSet = stmt.executeQuery(sql);
+		
+		chats = new ArrayList<ChatConfig>();
+		while(resultSet.next()) {
+			int id_chats = resultSet.getInt("id_chats");
+			int login_fk = resultSet.getInt("login_fk");
+			int chatId = resultSet.getInt("tg_chatid");
+			SekUser chatUser = null;
+			for(SekUser user : logins) {
+				if(user.getId_users() == login_fk) {
+					chatUser = user;
+					break;
+				}
+			}
+			
+			ChatConfig chat = new ChatConfig(id_chats, chatId, chatUser);
+			this.chats.add(chat);
+		}
+		stmt.close();
+	}
+	
+	public ChatConfig getConfigByChatId(int chatId) throws Exception {
+		for(ChatConfig c : this.chats) {
+			if(c.getChatId() == chatId) 
+				return c;
+		}
+		throw new Exception("Chat not found");
 	}
 }

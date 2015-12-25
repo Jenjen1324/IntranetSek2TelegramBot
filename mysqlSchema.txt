@@ -1,0 +1,11 @@
+Mysql Schema
+
+SekUser
+ - username
+ - password
+ - school
+ 
+Chat
+ - chatId
+ - SekUser
+ - configuration/updates
