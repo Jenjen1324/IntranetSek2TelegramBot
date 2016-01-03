@@ -1,0 +1,13 @@
+package no.northcode.jens.intranetsek2tg;
+
+public enum UserState {
+
+	WELCOME,
+	SELECT_SCHOOL_CAT,
+	SELECT_SCHOOL,
+	PROMPT_USERNAME,
+	PROMPT_PASSWORD,
+	AUTHENTICATED,
+	AUTHENTICATED_DATEPROMPT
+	
+}
