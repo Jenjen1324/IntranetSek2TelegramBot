@@ -5,7 +5,6 @@ import java.util.HashMap;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.event.Listener;
-import pro.zackpollard.telegrambot.api.event.chat.GroupChatCreatedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
@@ -21,8 +20,8 @@ public class TelegramListener implements Listener {
 
 	public TelegramListener(TelegramBot bot) throws IOException {
 		this.bot = bot;
-		this.users = new HashMap<Integer, UserData>();
-		this.groups = new HashMap<String, GroupData>();
+		this.users = DataHandler.loadUsers();
+		this.groups = DataHandler.loadGroups(users);
 		intranet = new IntranetHandler(bot);
 	}
 	
@@ -71,6 +70,12 @@ public class TelegramListener implements Listener {
 			case "login":
 				intranet.selectSchoolCat(event, user);
 				return;
+			case "timetable":
+				if(user.success) {
+					intranet.defaultKeyboard(event);
+				} else {
+					intranet.selectSchoolCat(event, user);
+				}
 			default:
 				showHelp(event);
 				return;
@@ -117,6 +122,11 @@ public class TelegramListener implements Listener {
 				groups.put(event.getChat().getId(), data);
 				handleGroupWelcome(event);
 			}
+		}
+		try {
+			DataHandler.saveData(users, groups);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

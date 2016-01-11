@@ -185,10 +185,9 @@ public class IntranetHandler {
 			}
 			
 			String timetable = prettyTimetable(lessons);
-			LocalDate date = lessons.get(0).getStartTime().toLocalDate();
 			
 			event.getChat().sendMessage(SendableTextMessage.builder()
-					.message(String.format(Strings.display_timetable, date.toString(), timetable))
+					.message(timetable)
 					.parseMode(ParseMode.MARKDOWN)
 					.build()
 					, bot);
@@ -211,7 +210,13 @@ public class IntranetHandler {
 	
 	private String prettyTimetable(ArrayList<Lesson> lessons) {
 		StringBuilder sb = new StringBuilder();
+		String date = "";
 		for(Lesson les : lessons) {
+			String newDate = les.getStartTime().toLocalDate().toString();
+			if(!date.equals(newDate)) {
+				sb.append(String.format("*%s*\n\n", newDate));
+				date = newDate;	
+			}
 			String type = les.getType();
 			switch(les.getType()) {
 			case "lesson":
