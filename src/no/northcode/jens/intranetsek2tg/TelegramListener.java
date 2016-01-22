@@ -53,7 +53,7 @@ public class TelegramListener implements Listener {
 				break;
 				
 			}
-		} else if(event.getChat().getType() == ChatType.GROUP) {
+		} else if(event.getChat().getType() == ChatType.GROUP || event.getChat().getType() == ChatType.SUPERGROUP) {
 			GroupData group = groups.get(event.getChat().getId());
 			if(group.active) {
 				intranet.handleTimetable(event, group.user);
@@ -80,7 +80,7 @@ public class TelegramListener implements Listener {
 				showHelp(event);
 				return;
 			}
-		} else if (event.getChat().getType() == ChatType.GROUP) {
+		} else if (event.getChat().getType() == ChatType.GROUP || event.getChat().getType() == ChatType.SUPERGROUP) {
 			GroupData group = groups.get(event.getChat().getId());
 			if(event.getCommand().equals("auth")) {
 				UserData user = users.get(event.getMessage().getSender().getId());
@@ -116,7 +116,7 @@ public class TelegramListener implements Listener {
 				users.put(event.getMessage().getSender().getId(), data);
 				handleWelcome(event);
 			}
-		} else if (event.getChat().getType() == ChatType.GROUP) {
+		} else if (event.getChat().getType() == ChatType.GROUP || event.getChat().getType() == ChatType.SUPERGROUP) {
 			if(!groups.containsKey(event.getMessage().getChat().getId())) {
 				GroupData data = new GroupData();
 				groups.put(event.getChat().getId(), data);
