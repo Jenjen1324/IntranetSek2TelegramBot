@@ -48,7 +48,7 @@ public class DataHandler {
 			for(Object group : garr) {
 				JSONObject jgroup = (JSONObject) group;
 				GroupData g = new GroupData();
-				g.user = users.get((String) jgroup.get("user"));
+				g.user = (Integer) jgroup.get("userid");
 				g.active = (Boolean) jgroup.get("active");
 				groups.put((String) jgroup.get("groupid"), g); 
 			}
@@ -79,7 +79,7 @@ public class DataHandler {
 			GroupData group = groups.get(groupid);
 			JSONObject gdata = new JSONObject();
 			gdata.put("groupid", groupid);
-			gdata.put("user", group.user);
+			gdata.put("userid", group.user);
 			gdata.put("active", group.active);
 			grouplist.add(gdata);
 		}

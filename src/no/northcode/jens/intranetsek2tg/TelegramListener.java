@@ -56,7 +56,7 @@ public class TelegramListener implements Listener {
 		} else if(event.getChat().getType() == ChatType.GROUP || event.getChat().getType() == ChatType.SUPERGROUP) {
 			GroupData group = groups.get(event.getChat().getId());
 			if(group.active) {
-				intranet.handleTimetable(event, group.user);
+				intranet.handleTimetable(event, users.get(group.user));
 			}
 		}
 	}
@@ -87,7 +87,7 @@ public class TelegramListener implements Listener {
 				if(user == null || user.success == false) {
 					event.getChat().sendMessage(Strings.msg_no_login, bot);
 				} else {
-					group.user = user;
+					group.user = event.getMessage().getSender().getId();
 					group.active = true;
 					event.getChat().sendMessage(Strings.msg_authenticated, bot);
 				}
