@@ -13,6 +13,7 @@ import no.northcode.jens.intranetsek2.exception.IntranetException;
 import no.northcode.jens.intranetsek2.exception.InvalidCredentialsException;
 import no.northcode.jens.intranetsek2.exception.LoginException;
 import pro.zackpollard.telegrambot.api.TelegramBot;
+import pro.zackpollard.telegrambot.api.chat.Chat;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
 import pro.zackpollard.telegrambot.api.chat.message.ForceReply;
 import pro.zackpollard.telegrambot.api.chat.message.content.Content;
@@ -151,6 +152,20 @@ public class IntranetHandler {
 	public void handleTimetable(TextMessageReceivedEvent event, UserData user) {
 		handleTimetable(event, user, null);
 	}
+	
+	public void sendTimetable(Chat chat, UserData user, LocalDate day) {
+		Login login = user.getIntranetLogin();
+		try {
+			login.login();
+			ArrayList<Lesson> lessons = Lesson.getLessonByDay(login, day);
+			String timetable = prettyTimetable(lessons);
+			chat.sendMessage(timetable, bot);
+		}catch(Exception ex) {
+			
+		}
+		
+	}
+	
 	
 	public void handleTimetable(TextMessageReceivedEvent event, UserData user, LocalDate day) {
 		String msg = ((TextContent)event.getMessage().getContent()).getContent();

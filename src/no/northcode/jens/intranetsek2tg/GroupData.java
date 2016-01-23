@@ -4,4 +4,6 @@ public class GroupData {
 
 	public Integer user;
 	public boolean active = false;
+	public boolean getMorningUpdates = false;
+	public boolean getEveningUpdates = true;
 }

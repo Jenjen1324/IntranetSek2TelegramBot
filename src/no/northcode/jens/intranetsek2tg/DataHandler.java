@@ -81,6 +81,8 @@ public class DataHandler {
 			gdata.put("groupid", groupid);
 			gdata.put("userid", group.user);
 			gdata.put("active", group.active);
+			gdata.put("getMorningUpdates", group.getMorningUpdates);
+			gdata.put("getEveningUpdates", group.getEveningUpdates);
 			grouplist.add(gdata);
 		}
 		root.put("groups", grouplist);

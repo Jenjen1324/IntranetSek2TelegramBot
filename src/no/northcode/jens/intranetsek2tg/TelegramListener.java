@@ -18,6 +18,14 @@ public class TelegramListener implements Listener {
 	private HashMap<String, GroupData> groups;
 	private IntranetHandler intranet;
 
+	public HashMap<Integer, UserData> getUsers() {
+		return users;
+	}
+	
+	public HashMap<String, GroupData> getGroups() {
+		return groups;
+	}
+	
 	public TelegramListener(TelegramBot bot) throws IOException {
 		this.bot = bot;
 		this.users = DataHandler.loadUsers();
@@ -145,6 +153,14 @@ public class TelegramListener implements Listener {
 	
 	private void showHelp(MessageEvent event) {
 		
+	}
+
+	public IntranetHandler getIntranetHandler() {
+		return intranet;
+	}
+
+	public TelegramBot getBot() {
+		return bot;
 	}
 	
 
