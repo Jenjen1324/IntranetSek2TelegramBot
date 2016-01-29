@@ -146,7 +146,11 @@ public class IntranetHandler {
 			keyboard.addRow(Strings.keyboard_followingweek);
 		
 		
-		event.getChat().sendMessage(SendableTextMessage.builder().message(Strings.msg_show_keyboard).replyMarkup(keyboard.build()).build(), bot);
+		event.getChat().sendMessage(
+				SendableTextMessage.builder()
+				.message(Strings.msg_show_keyboard)
+				.replyMarkup(keyboard.build())
+				.build(), bot);
 	}
 
 	public void handleTimetable(TextMessageReceivedEvent event, UserData user) {
