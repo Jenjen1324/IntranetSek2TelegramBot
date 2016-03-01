@@ -1,6 +1,7 @@
 package no.northcode.jens.intranetsek2tg;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
@@ -29,7 +30,7 @@ public class TelegramListener implements Listener {
 	public TelegramListener(TelegramBot bot) throws IOException {
 		this.bot = bot;
 		this.users = DataHandler.loadUsers();
-		this.groups = DataHandler.loadGroups(users);
+		this.groups = DataHandler.loadGroups();
 		intranet = new IntranetHandler(bot);
 	}
 	
@@ -90,7 +91,8 @@ public class TelegramListener implements Listener {
 			}
 		} else if (event.getChat().getType() == ChatType.GROUP || event.getChat().getType() == ChatType.SUPERGROUP) {
 			GroupData group = groups.get(event.getChat().getId());
-			if(event.getCommand().equals("auth")) {
+			switch(event.getCommand()) {
+			case "auth":
 				UserData user = users.get(event.getMessage().getSender().getId());
 				if(user == null || user.success == false) {
 					event.getChat().sendMessage(Strings.msg_no_login, bot);
@@ -99,12 +101,12 @@ public class TelegramListener implements Listener {
 					group.active = true;
 					event.getChat().sendMessage(Strings.msg_authenticated, bot);
 				}
-			} else if (event.getCommand().equals("timetable")) {
-				if(group.active) {
-					intranet.defaultKeyboard(event);
-				} else {
-					event.getChat().sendMessage(Strings.msg_no_login, bot);
-				}
+				break;
+			case "heute":
+				intranet.handleTimetable(event, users.get(group.user));
+				break;
+			case "morgen":
+				intranet.handleTimetable(event, users.get(group.user), LocalDate.now().plusDays(1));
 			}
 		}
 	}

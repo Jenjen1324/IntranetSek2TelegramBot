@@ -35,6 +35,7 @@ public class Program {
 		tgBot.getEventsManager().register(listener);
 		tgBot.startUpdates(false);
 		try {
+			System.out.println("Starting timer...");
 			SchedulerFactory schedFact = new StdSchedulerFactory();
 			Scheduler sched = schedFact.getScheduler();
 			sched.start();
@@ -47,15 +48,18 @@ public class Program {
 			Trigger trigger = TriggerBuilder.newTrigger()
 					.withIdentity("DailyTrigger", "updates")
 					//.startAt(DateBuilder.todayAt(18, 0, 0))
-					.startNow()
+					//.startNow()
 					.withSchedule(CronScheduleBuilder.cronSchedule("0 0 18 * * ?"))
 					.build();
 			
 			sched.scheduleJob(job, trigger);
 			sched.start();
+			System.out.println("Timer started");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+		
+		
 		
 	}
 

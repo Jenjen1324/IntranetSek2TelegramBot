@@ -210,7 +210,7 @@ public class IntranetHandler {
 					.parseMode(ParseMode.MARKDOWN)
 					.build()
 					, bot);
-			user.state = UserState.AUTHENTICATED;
+			user.state = UserState.AUTHENTICATED;	
 			
 		} catch (InvalidCredentialsException e) {
 			// TODO Auto-generated catch block
@@ -252,6 +252,9 @@ public class IntranetHandler {
 				break;
 			case "block":
 				type = "\uD83D\uDEBB";
+				break;
+			case "rmres":
+				type = "\u2139";
 				break;
 			}
 			String room = "";

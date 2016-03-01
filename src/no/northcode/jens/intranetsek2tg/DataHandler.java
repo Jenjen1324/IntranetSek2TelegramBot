@@ -21,13 +21,19 @@ public class DataHandler {
 			JSONObject obj = (JSONObject) parser.parse(new FileReader(CONFIG_FILE));
 			JSONArray uarr = (JSONArray) obj.get("users");
 			for(Object user : uarr) {
-				JSONObject juser = (JSONObject) user;
-				UserData u = new UserData();
-				u.username = (String) juser.get("username");
-				u.school = (String) juser.get("school");
-				u.password = (String) juser.get("password");
-				u.state = UserState.valueOf((String) juser.get("state"));
-				users.put(((Long) juser.get("userid")).intValue(), u); 
+				try {
+					JSONObject juser = (JSONObject) user;
+					UserData u = new UserData();
+					u.username = (String) juser.get("username");
+					u.school = (String) juser.get("school");
+					u.password = (String) juser.get("password");
+					u.state = UserState.valueOf((String) juser.get("state"));
+					u.success = (boolean) juser.get("success");
+					users.put(((Long) juser.get("userid")).intValue(), u); 
+				}
+				catch (Exception ex) {
+					System.err.println("Error while reading user");
+				}
 			}
 		} catch (Exception ex) { 
 			System.out.println("Config file not found!");
@@ -38,7 +44,7 @@ public class DataHandler {
 		return users;
 	}
 	
-	public static HashMap<String, GroupData> loadGroups(HashMap<Integer, UserData> users) {
+	public static HashMap<String, GroupData> loadGroups() {
 		HashMap<String, GroupData> groups = new HashMap<String, GroupData>();
 		
 		try {
@@ -48,11 +54,16 @@ public class DataHandler {
 			for(Object group : garr) {
 				JSONObject jgroup = (JSONObject) group;
 				GroupData g = new GroupData();
-				g.user = (Integer) jgroup.get("userid");
+				g.user =  ((Long) jgroup.get("userid")).intValue();
 				g.active = (Boolean) jgroup.get("active");
+				String id = (String) jgroup.get("groupid");
 				groups.put((String) jgroup.get("groupid"), g); 
 			}
-		} catch (Exception ex) { }
+		} catch (Exception ex) { 
+			System.err.println(ex.getMessage());
+			ex.printStackTrace();
+			
+		}
 		
 		return groups;
 	}
@@ -70,6 +81,7 @@ public class DataHandler {
 			udata.put("school", user.school);
 			udata.put("password", user.password);
 			udata.put("state", user.state.toString());
+			udata.put("success", user.success);
 			userlist.add(udata);
 		}
 		root.put("users", userlist);
