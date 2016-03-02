@@ -13,8 +13,8 @@ public class DataHandler {
 
 	private static final String CONFIG_FILE = "config.json";
 	
-	public static HashMap<Integer, UserData> loadUsers() {
-		HashMap<Integer, UserData> users = new HashMap<Integer, UserData>();
+	public static HashMap<Long, UserData> loadUsers() {
+		HashMap<Long, UserData> users = new HashMap<Long, UserData>();
 		
 		try {
 			JSONParser parser = new JSONParser();
@@ -29,7 +29,7 @@ public class DataHandler {
 					u.password = (String) juser.get("password");
 					u.state = UserState.valueOf((String) juser.get("state"));
 					u.success = (boolean) juser.get("success");
-					users.put(((Long) juser.get("userid")).intValue(), u); 
+					users.put((Long) juser.get("userid"), u); 
 				}
 				catch (Exception ex) {
 					System.err.println("Error while reading user");
@@ -56,7 +56,6 @@ public class DataHandler {
 				GroupData g = new GroupData();
 				g.user =  ((Long) jgroup.get("userid")).intValue();
 				g.active = (Boolean) jgroup.get("active");
-				String id = (String) jgroup.get("groupid");
 				groups.put((String) jgroup.get("groupid"), g); 
 			}
 		} catch (Exception ex) { 
@@ -69,11 +68,11 @@ public class DataHandler {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void saveData(HashMap<Integer, UserData> users, HashMap<String, GroupData> groups) throws IOException {
+	public static void saveData(HashMap<Long, UserData> users, HashMap<String, GroupData> groups) throws IOException {
 		JSONObject root = new JSONObject();
 		JSONArray userlist = new JSONArray();
 		// Users
-		for(Integer userid : users.keySet()) {
+		for(Long userid : users.keySet()) {
 			UserData user = users.get(userid);
 			JSONObject udata = new JSONObject();
 			udata.put("userid", userid);

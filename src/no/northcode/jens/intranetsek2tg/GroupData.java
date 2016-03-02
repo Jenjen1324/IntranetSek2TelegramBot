@@ -2,7 +2,7 @@ package no.northcode.jens.intranetsek2tg;
 
 public class GroupData {
 
-	public Integer user;
+	public long user;
 	public boolean active = false;
 	public boolean getMorningUpdates = false;
 	public boolean getEveningUpdates = true;

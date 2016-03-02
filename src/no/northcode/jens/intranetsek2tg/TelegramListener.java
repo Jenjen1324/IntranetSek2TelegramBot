@@ -15,11 +15,11 @@ import pro.zackpollard.telegrambot.api.user.User;
 public class TelegramListener implements Listener {
 	
 	private TelegramBot bot;
-	private HashMap<Integer, UserData> users;
+	private HashMap<Long, UserData> users;
 	private HashMap<String, GroupData> groups;
 	private IntranetHandler intranet;
 
-	public HashMap<Integer, UserData> getUsers() {
+	public HashMap<Long, UserData> getUsers() {
 		return users;
 	}
 	
