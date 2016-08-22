@@ -22,6 +22,7 @@ import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
+import pro.zackpollard.telegrambot.api.keyboards.KeyboardButton;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup;
 import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardMarkup.ReplyKeyboardMarkupBuilder;
 
@@ -40,15 +41,15 @@ public class IntranetHandler {
 	public void selectSchoolCat(MessageEvent event, UserData user) {
 		ReplyKeyboardMarkupBuilder keyboard = ReplyKeyboardMarkup.builder()
 				.selective(true)
-				.oneTime(true);
+				.oneTime(false);
 		for(String cat : schools_str.keySet()) {
-			keyboard.addRow(cat);
+			keyboard.addRow(KeyboardButton.builder().text(cat).build());
 		}
 		event.getChat().sendMessage(SendableTextMessage.builder()
 				.message(Strings.msg_select_school_cat)
 				.replyMarkup(keyboard.build())
 				.build()
-				, bot);
+				);
 		user.state = UserState.SELECT_SCHOOL_CAT;
 		user.success = false;
 	}
@@ -63,19 +64,18 @@ public class IntranetHandler {
 						.selective(true)
 						.oneTime(true);
 				for(School school : schools_str.get(msg.getContent())) {
-					keyboard.addRow(school.getName());
+					keyboard.addRow(KeyboardButton.builder().text(school.getName()).build());
 				}
 				event.getChat().sendMessage(SendableTextMessage.builder()
 						.message(Strings.msg_select_school)
 						.replyMarkup(keyboard.build())
-						.build()
-						, bot);
+						.build());
 				user.state = UserState.SELECT_SCHOOL;
 				return;
 			}
 		}
 		
-		event.getChat().sendMessage(Strings.msg_invalid_school_cat, bot);
+		event.getChat().sendMessage(Strings.msg_invalid_school_cat);
 		selectSchoolCat(event, user);
 	}
 	
@@ -83,7 +83,7 @@ public class IntranetHandler {
 		String msg = ((TextContent)event.getMessage().getContent()).getContent();
 		School s = School.findSchoolByName(msg, schools);
 		if(s == null) {
-			event.getChat().sendMessage(Strings.msg_invalid_school, bot);
+			event.getChat().sendMessage(Strings.msg_invalid_school);
 			selectSchoolCat(event, user);
 			return;
 		}
@@ -93,9 +93,8 @@ public class IntranetHandler {
 		// Username
 		event.getChat().sendMessage(SendableTextMessage.builder()
 				.message(Strings.msg_enter_username)
-				.replyMarkup(new ForceReply(true))
-				.build()
-				, bot);
+				.replyMarkup(ForceReply.builder().selective(true).build())
+				.build());
 		user.state = UserState.PROMPT_USERNAME;
 	}
 
@@ -105,9 +104,8 @@ public class IntranetHandler {
 		
 		event.getChat().sendMessage(SendableTextMessage.builder()
 				.message(Strings.msg_enter_password)
-				.replyMarkup(new ForceReply(true))
-				.build()
-				, bot);
+				.replyMarkup(ForceReply.builder().selective(true).build())
+				.build());
 		user.state = UserState.PROMPT_PASSWORD;
 	}
 
@@ -119,17 +117,17 @@ public class IntranetHandler {
 		if(l != null) {
 			try {
 				l.login();
-				event.getChat().sendMessage(Strings.msg_success, bot);
+				event.getChat().sendMessage(Strings.msg_success);
 				user.state = UserState.AUTHENTICATED;
 				user.success = true;
 				defaultKeyboard(event);
 				return;
 			} catch (InvalidCredentialsException ex) {
-				event.getChat().sendMessage(Strings.msg_invalid_logindata, bot);
+				event.getChat().sendMessage(Strings.msg_invalid_logindata);
 				selectSchoolCat(event, user);
 				return;
 			} catch (Exception ex) {
-				event.getChat().sendMessage(Strings.msg_failed_login, bot);
+				event.getChat().sendMessage(Strings.msg_failed_login);
 				user.state = UserState.WELCOME;
 				return;
 			}
@@ -138,14 +136,16 @@ public class IntranetHandler {
 	
 	public void defaultKeyboard(MessageReceivedEvent event) {
 		ReplyKeyboardMarkupBuilder keyboard = ReplyKeyboardMarkup.builder();
-		keyboard.addRow(Strings.keyboard_today, Strings.keyboard_tomorrow);
+		keyboard.addRow(KeyboardButton.builder().text(Strings.keyboard_today).build(), 
+				KeyboardButton.builder().text(Strings.keyboard_tomorrow).build());
 		if(event.getChat().getType() == ChatType.PRIVATE) 
-			keyboard.addRow(Strings.keyboard_followingweek, Strings.keyboard_date);
+			keyboard.addRow(KeyboardButton.builder().text(Strings.keyboard_followingweek).build(), 
+					KeyboardButton.builder().text(Strings.keyboard_date).build());
 		else
-			keyboard.addRow(Strings.keyboard_followingweek);
+			keyboard.addRow(KeyboardButton.builder().text(Strings.keyboard_followingweek).build());
 		
 		
-		event.getChat().sendMessage(SendableTextMessage.builder().message(Strings.msg_show_keyboard).replyMarkup(keyboard.build()).build(), bot);
+		event.getChat().sendMessage(SendableTextMessage.builder().message(Strings.msg_show_keyboard).replyMarkup(keyboard.build()).build());
 	}
 
 	public void handleTimetable(TextMessageReceivedEvent event, UserData user) {
@@ -189,8 +189,7 @@ public class IntranetHandler {
 			event.getChat().sendMessage(SendableTextMessage.builder()
 					.message(timetable)
 					.parseMode(ParseMode.MARKDOWN)
-					.build()
-					, bot);
+					.build());
 			user.state = UserState.AUTHENTICATED;
 			
 		} catch (InvalidCredentialsException e) {
@@ -252,8 +251,8 @@ public class IntranetHandler {
 		event.getChat().sendMessage(SendableTextMessage.builder()
 				.message(Strings.msg_enter_date)
 				.replyTo(event.getMessage())
-				.replyMarkup(new ForceReply())
-				.build(), bot);
+				.replyMarkup(ForceReply.builder().build())
+				.build());
 	}
 	
 	public void handleDate(TextMessageReceivedEvent event, UserData user) {

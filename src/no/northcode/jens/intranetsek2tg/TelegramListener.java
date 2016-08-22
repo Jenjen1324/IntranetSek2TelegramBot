@@ -4,17 +4,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import pro.zackpollard.telegrambot.api.TelegramBot;
 import pro.zackpollard.telegrambot.api.chat.ChatType;
+import pro.zackpollard.telegrambot.api.chat.message.send.SendableTextMessage;
 import pro.zackpollard.telegrambot.api.event.Listener;
 import pro.zackpollard.telegrambot.api.event.chat.ParticipantJoinGroupChatEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.CommandMessageReceivedEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.MessageEvent;
 import pro.zackpollard.telegrambot.api.event.chat.message.TextMessageReceivedEvent;
+import pro.zackpollard.telegrambot.api.keyboards.ReplyKeyboardHide;
 import pro.zackpollard.telegrambot.api.user.User;
 
 public class TelegramListener implements Listener {
 	
 	private TelegramBot bot;
-	private HashMap<Integer, UserData> users;
+	private HashMap<Long, UserData> users;
 	private HashMap<String, GroupData> groups;
 	private IntranetHandler intranet;
 
@@ -85,17 +87,17 @@ public class TelegramListener implements Listener {
 			if(event.getCommand().equals("auth")) {
 				UserData user = users.get(event.getMessage().getSender().getId());
 				if(user == null || user.success == false) {
-					event.getChat().sendMessage(Strings.msg_no_login, bot);
+					event.getChat().sendMessage(Strings.msg_no_login);
 				} else {
 					group.user = user;
 					group.active = true;
-					event.getChat().sendMessage(Strings.msg_authenticated, bot);
+					event.getChat().sendMessage(Strings.msg_authenticated);
 				}
 			} else if (event.getCommand().equals("timetable")) {
 				if(group.active) {
 					intranet.defaultKeyboard(event);
 				} else {
-					event.getChat().sendMessage(Strings.msg_no_login, bot);
+					event.getChat().sendMessage(Strings.msg_no_login);
 				}
 			}
 		}
@@ -110,6 +112,7 @@ public class TelegramListener implements Listener {
 	}
 	
 	private void check(MessageEvent event) {
+		System.out.println(event.toString());
 		if(event.getChat().getType() == ChatType.PRIVATE) {
 			if(!users.containsKey(event.getMessage().getSender().getId())) {
 				UserData data = new UserData();
@@ -135,16 +138,18 @@ public class TelegramListener implements Listener {
 	}
 	
 	private void handleWelcome(MessageEvent event) {
-		event.getChat().sendMessage(Strings.msg_welcome, bot);
+		event.getChat().sendMessage(Strings.msg_welcome);
 		getUserData(event).state = UserState.WELCOME;
 	}
 	
 	private void handleGroupWelcome(MessageEvent event) {
-		event.getChat().sendMessage(Strings.msg_welcome_group, bot);
+		event.getChat().sendMessage(Strings.msg_welcome_group);
 	}
 	
 	private void showHelp(MessageEvent event) {
-		
+		event.getChat().sendMessage(SendableTextMessage.builder()
+				.message("HALP")
+				.replyMarkup(ReplyKeyboardHide.builder().build()).build());
 	}
 	
 
